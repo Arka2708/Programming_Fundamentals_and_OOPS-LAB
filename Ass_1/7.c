@@ -8,8 +8,6 @@ struct student{
     struct student * next; //self-referencing structure
 };
 
-struct student *head=NULL;
-
 void display(struct student *head)
 {
     int i=1;
@@ -21,8 +19,8 @@ void display(struct student *head)
     }
     printf("\n");
 }
-struct student * Add()
-{
+struct student * Add(struct student *head)
+{  
     struct student *s = (struct student *)malloc(sizeof(struct student));
     printf("\nEnter Name: ");scanf("%s", s->name);
     printf("Enter Roll No.: ");scanf("%d", &s->roll);
@@ -51,20 +49,26 @@ struct student *delete(struct student *head, int Roll)
     if(p->roll==Roll)
     {
         free(p);
+        head=head->next;
         return head;
     }
-    while(q->next !=NULL)
+    while(q !=NULL)
     {
         if(q->roll==Roll) break;
         p = p->next;
         q = q->next;
     }
-    p->next = q->next;
-    free(q);
+    if(q->roll!=Roll) printf("Wrong Input!!! Enter Correct Roll Number. Try Again :)\n");
+    else
+    {
+        p->next = q->next;
+        free(q);
+    }
     return head;
 }
 int main()
 {
+    struct student *head=NULL;
     int choice;
     while(1)
     {
@@ -78,7 +82,7 @@ int main()
     
         switch(choice)
         {
-            case 1: head=Add();
+            case 1: head=Add(head);
                     break;
             case 2: {
                     int Roll;
@@ -87,7 +91,8 @@ int main()
                     head=delete(head,Roll);
                     break;
             }
-            case 3: display(head);
+            case 3: if(head==NULL) printf("No Record!!! It's Empty\n");
+                    else display(head);
                     break;
             case 4:  exit(1);
         }
